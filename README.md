@@ -4,3 +4,5 @@ Activate your virtual environment (if not already):
 source myenv/bin/activate
 Run the script:
 python3 scraper.py
+
+the .json file link for the repo is here

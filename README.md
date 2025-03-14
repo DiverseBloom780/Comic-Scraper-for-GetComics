@@ -1,13 +1,10 @@
-the GetComics.py in releases is what you use for scraping their website to get the urls for the Comics, it will give you a output in PowerShell, be sure to install all modules before running the python script
-
-
-
 📌 Instructions to Use GetComics Scraper on Your PC
 1️⃣ Install Dependencies
 First, make sure you have Python installed. Then, install the required libraries by running:
 
 sh
 pip install requests beautifulsoup4 tqdm
+
 2️⃣ Download the Script
 Clone your GitHub repository or download GetComics.py into a folder on your PC.
 
@@ -16,6 +13,7 @@ Navigate to the folder where GetComics.py is located and run:
 
 sh
 python GetComics.py
+
 4️⃣ What This Script Does:
 Scans all drives for previously downloaded comics.
 Scrapes all pages from GetComics.org, ensuring no comics are missed.
@@ -26,5 +24,6 @@ By default, comics are saved in:
 
 sh
 F:\Books
+
 If you need to change this, edit the save_path variable inside GetComics.py.
 

@@ -41,10 +41,16 @@ def get_total_pages(base_url):
             return 1
         
         soup = BeautifulSoup(response.text, 'html.parser')
-        pagination = soup.find('a', class_='last')
-        if pagination and 'href' in pagination.attrs:
-            return int(pagination['href'].split('/page/')[-1].split('/')[0])
-        return 1
+        pagination = soup.find_all('a', href=True)
+        max_page = 1
+        for link in pagination:
+            if '/page/' in link['href']:
+                try:
+                    page_num = int(link['href'].split('/page/')[-1].split('/')[0])
+                    max_page = max(max_page, page_num)
+                except ValueError:
+                    continue
+        return max_page
     except requests.exceptions.RequestException as e:
         print(f"Error fetching {base_url}: {e}")
         return 1
@@ -73,8 +79,8 @@ def get_comic_links_from_page(url):
     
     return list(links)
 
-# Get direct download link
-def get_direct_download_link(comic_page_url):
+# Get download links (including MegaDrive, WeTransfer, Mirror Download, and Main Server)
+def get_download_link(comic_page_url):
     print(f"Checking download link for {comic_page_url}...")
     try:
         response = SESSION.get(comic_page_url, timeout=10)
@@ -84,12 +90,16 @@ def get_direct_download_link(comic_page_url):
             return None
         
         soup = BeautifulSoup(response.text, 'html.parser')
+        download_links = []
         for link in soup.find_all('a', href=True):
-            if '/dlds/' in link['href']:
-                print(f"Download link found: {link['href']}")
-                return link['href']
+            if any(x in link['href'] for x in ['/dlds/', 'mega.nz', 'wetransfer.com', 'mirror', 'mainserver']):
+                download_links.append(link['href'])
         
-        print(f"No direct download link found for {comic_page_url}")
+        if download_links:
+            print(f"Download links found: {download_links}")
+            return download_links[0]
+        
+        print(f"No valid download link found for {comic_page_url}")
         return None
     except requests.exceptions.RequestException as e:
         print(f"Error fetching {comic_page_url}: {e}")
@@ -97,16 +107,12 @@ def get_direct_download_link(comic_page_url):
 
 # Download comics
 def download_comic(comic_page_url, save_path):
-    direct_link = get_direct_download_link(comic_page_url)
+    direct_link = get_download_link(comic_page_url)
     if not direct_link:
         print(f"Skipping download: No valid link for {comic_page_url}")
         return
     
     comic_name = comic_page_url.strip('/').split('/')[-1]
-    if "#comment" in comic_name:
-        print(f"Skipping: {comic_name}")
-        return
-    
     file_extension = ".cbz" if ".cbz" in direct_link else ".cbr"
     save_file_path = os.path.join(save_path, comic_name + file_extension)
     
@@ -136,10 +142,13 @@ if __name__ == "__main__":
     ]
     
     print("Starting download process...")
-    save_path = os.path.join(os.path.expanduser("~"), "Desktop", "Downloads")
+    save_path = "F:\\Books"
     os.makedirs(save_path, exist_ok=True)
     
     downloaded_comics = get_downloaded_comics()
+    
+    def is_already_downloaded(comic_name):
+        return any(comic_name in downloaded for downloaded in downloaded_comics)
     
     print("Scraping main categories and home page...")
     for category in categories:
@@ -151,6 +160,10 @@ if __name__ == "__main__":
             comic_links = get_comic_links_from_page(page_url)
             
             for comic_link in comic_links:
+                comic_name = comic_link.strip('/').split('/')[-1]
+                if is_already_downloaded(comic_name):
+                    print(f"Skipping already downloaded comic: {comic_name}")
+                    continue
                 print(f"Processing comic: {comic_link}")
                 download_comic(comic_link, save_path)
     

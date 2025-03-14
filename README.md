@@ -2,7 +2,6 @@
 1️⃣ Install Dependencies
 First, make sure you have Python installed. Then, install the required libraries by running:
 
-sh
 pip install requests beautifulsoup4 tqdm
 
 2️⃣ Download the Script
@@ -11,8 +10,8 @@ Clone your GitHub repository or download GetComics.py into a folder on your PC.
 3️⃣ Run the Script
 Navigate to the folder where GetComics.py is located and run:
 
-sh
-python GetComics.py
+
+python3 GetComics.py
 
 4️⃣ What This Script Does:
 Scans all drives for previously downloaded comics.

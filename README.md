@@ -6,8 +6,7 @@ pip install requests beautifulsoup4 tqdm
 
 2️⃣ Download the Script
 Clone GitHub repository or download GetComics.py into a folder on your PC.
-git clone https://github.com/DiverseBloom780/GetComics.py
-cd GetComics.py
+[git clone https://github.com/DiverseBloom780/GetComics.py](https://github.com/DiverseBloom780/Comic-Scraper-for-GetComics/blob/main/GetComics.py)
 
 
 3️⃣ Run the Script

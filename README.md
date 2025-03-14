@@ -21,7 +21,6 @@ Looks for MegaDrive, WeTransfer, Mirror, and Main Server links if no direct down
 📂 Download Path
 By default, comics are saved in:
 
-sh
 F:\Books
 
 If you need to change this, edit the save_path variable inside GetComics.py.
